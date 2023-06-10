@@ -1,16 +1,14 @@
+import random
 class Card:
     def __init__(self, suit, value) -> None:
-        if(type(value)!=int or (7<value<=0 and 12<value<10)):
-            raise ValueError("Unknown card value")
-        if(type(suit)!=str or suit not in {"copas", "espadas", "bastos", "oros"}):
-            raise ValueError("Unknown card suit")
-        
+        if(type(value)!=int):
+            raise TypeError("Unknown card value")
         self.suit = suit
         self.value = value
 
     def __str__(self) -> str:
         val = "" #NOTE: actualizar python al 3.10
-        if(self.value ==12):
+        if(self.value ==12): #Spanish language
             val ="Rey"
         elif(self.value==11):
             val ="Caballo"
@@ -22,6 +20,21 @@ class Card:
             val = str(self.value)
         return(f"{val} de {self.suit}")
     
+class Deck:
+    def __init__(self, suits: list, intervals:list) -> None:
+        cards = []
+        for s in suits:
+            for interval in intervals:
+                for n in range(interval[0], interval[1]+1):
+                    cards.append(Card(s, n))
+        self.cards = cards
+
+    def shuffle(self):
+        random.shuffle(self.cards)
+
+    
+    def __str__(self) -> str:
+        return str([str(c) for c in self.cards])
 
 
 if __name__ == "__main__":
@@ -34,5 +47,14 @@ if __name__ == "__main__":
     cards = [c1, c2, c3, c4, c5, c6]
     for c in cards:
         print(c)
+
+    d1 = Deck(["oros", "copas", "espadas", "bastos"], [(1,7), (10,12)])
+    print(d1)
+    print(len(str(d1).split(","))) #Number of cards
+    d1.shuffle()
+    print(d1)
+    d1.shuffle()
+    print(d1)
+
 
         
