@@ -1,6 +1,9 @@
 """
 Function that genetrates a random 27 character string, then compares it to 'methinks it is like a weasel' and returns a score based on how many
 characters match
+
+Then improve upon the program in the self check by keeping letters that are correct
+and only modifying one character in the best string so far
 """
 import random
 
