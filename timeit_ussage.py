@@ -4,6 +4,7 @@ To use timeit you create a Timer object whose parameters are two Python statemen
 first parameter is a Python statement that you want to time; the second parameter is a statement
 that will run once to set up the test. The timeit module will then time how long it takes to
 execute the statement some number of times
+#NOTE timeit instructions for tests
 """
 
 def test1():
