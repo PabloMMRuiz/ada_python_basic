@@ -59,3 +59,17 @@ def decimal_to_binary(num_dec:int)->str:
     return res
 
 print(decimal_to_binary(128))
+
+def decimal_to_base(num_dec:int, base:int)->str:
+    aux = "0123456789ABCDEF" #We need this for bases greater than 10: we do not have enough digits
+    s = Stack()
+    while num_dec>0:
+        temp = num_dec%base 
+        s.push(aux[temp])
+        num_dec=num_dec//base
+    res = ""
+    while not s.is_empty():
+        res+=s.pop()
+    return res
+
+print(decimal_to_base(16*16+11+16, 16))
