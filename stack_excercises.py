@@ -73,3 +73,58 @@ def decimal_to_base(num_dec:int, base:int)->str:
     return res
 
 print(decimal_to_base(16*16+11+16, 16))
+
+
+def infix_to_postfix(op_string:str)->str:
+    op_stack = Stack()
+    op_string = op_string.replace(" ", "")
+    res = []
+    operators = "(+-*/^" #Another implementation uses a dictionary. It is faster, but negligibly so
+    for elem in op_string:
+        if elem == "(":
+            op_stack.push(elem)
+            continue
+        elif elem == ")":
+            while True:
+                left_elem = op_stack.pop()
+                if left_elem == "(":
+                    break
+                res.append(left_elem)
+        elif elem in operators:
+            while not op_stack.is_empty() and operators.index(op_stack.peek())>=operators.index(elem):
+                res.append(op_stack.pop())
+            op_stack.push(elem)
+        else:
+            res.append(elem)
+    while not op_stack.is_empty():
+        res.append(op_stack.pop())
+    return "".join(res)
+#This is the Shunting Yard Algorithm (Dijkstra) and uses Reverse Polish Notation
+#https://en.wikipedia.org/wiki/Shunting_yard_algorithm
+print(infix_to_postfix("((A+B)*(C+D))/(E-F)"))
+
+def postfix_evaluation(postfix_expr:str)->int:
+    operands_stack = Stack()
+    for elem in postfix_expr:
+        if elem in "+-*/":
+            left_op = float(operands_stack.pop())
+            right_op = float(operands_stack.pop())
+            if elem == "+":
+                operands_stack.push(right_op+left_op)
+            elif elem == "-":
+                operands_stack.push(right_op-left_op)
+            elif elem == "*":
+                operands_stack.push(right_op*left_op)
+            elif elem == "/":
+                operands_stack.push(right_op/left_op)
+        else: operands_stack.push(elem)
+    return operands_stack.pop()
+
+print((5+4)*(2-3)/(5-9))
+print((infix_to_postfix("(5+4)*(2-3)/(5-9)")))
+print(postfix_evaluation("78+32+/"))
+
+#Self check page 81:
+#Postfix 10 + 3 * 5/(16 − 4): 
+print((infix_to_postfix("10 + 3 * 5/(16 - 4)")))
+print(infix_to_postfix("5 * 3^(4 - 2)"))
