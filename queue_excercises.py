@@ -1,5 +1,5 @@
 import math
-from queue_1 import Queue
+from Data_Structures.queue_1 import Queue
 import random
 
 def hot_potato(name_list, num)->str:

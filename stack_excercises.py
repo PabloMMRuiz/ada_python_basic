@@ -1,4 +1,4 @@
-from stack import Stack
+from Data_Structures.stack import Stack
 
 def par_checker(symbol_string:str)->bool:
     s = Stack()

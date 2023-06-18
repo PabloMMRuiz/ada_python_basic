@@ -1,6 +1,6 @@
 #Palindrome checker
 
-from deque import Deque
+from Data_Structures.deque import Deque
 
 
 def palindrome_checker(check_string:str)->bool:
