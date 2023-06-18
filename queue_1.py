@@ -4,7 +4,7 @@ class Queue:
     def __init__(self) -> None:
         self.items = []
 
-    def if_empty(self)->bool:
+    def is_empty(self)->bool:
         return True if len(self.items) == 0 else False
     def enqueue(self, item):
         #Add an item to the Queue
