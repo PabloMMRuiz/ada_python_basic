@@ -134,7 +134,7 @@ class SinglyLinkedList:
     def index(self, item)->int:
         pos = 0
         if self.is_empty():
-            raise ValueError
+            raise ValueError()
         else: 
             curr_node = self.rear
         while curr_node.get_next() != None:
@@ -143,7 +143,7 @@ class SinglyLinkedList:
             else:
                 pos +=1
                 curr_node = curr_node.get_next()
-        raise ValueError
+        raise ValueError()
 
     def pop(self, index=0)->any:
         if 0>index or index>=self.length:
