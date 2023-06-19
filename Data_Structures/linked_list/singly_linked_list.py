@@ -66,6 +66,7 @@ class SinglyLinkedList:
         return self.rear == None
 # [1,2,3,4,5]: 1 is rear, 5 is head
     def add(self, item):
+        """Pushes an item to the rear (index 0) of the list"""
         temp = Node(item)
         temp.set_next(self.rear)
         self.rear = temp
@@ -90,6 +91,7 @@ class SinglyLinkedList:
                 curr_node = curr_node.get_next()
     
     def append(self, item):
+        """Appends an item to the head (index -1) of the list"""
         temp = Node(item)
         self.head.set_next(temp)
         temp.set_next(None)
