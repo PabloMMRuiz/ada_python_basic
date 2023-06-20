@@ -23,7 +23,7 @@ class QueueLinkedList:
     def __init__(self) -> None:
         self.items = SinglyLinkedList()
     def is_empty(self)->bool:
-        return True if len(self.items) == 0 else False
+        return self.items.is_empty()
     def enqueue(self, item):
         #Add an item to the Queue
         self.items.append(item)

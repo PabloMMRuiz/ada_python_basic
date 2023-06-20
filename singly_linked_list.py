@@ -17,6 +17,8 @@ class SinglyLinkedList:
         return False
 
     def __str__(self) -> str:
+        if self.is_empty():
+            return ""
         res = str(self.rear.get_data())
         curr_node = self.rear.get_next()
         while curr_node != None:
@@ -92,7 +94,7 @@ class SinglyLinkedList:
     
     def append(self, item):
         """Appends an item to the head (index -1) of the list"""
-        if self.head == None:
+        if self.rear == None:
             temp = Node(item)
             self.head = temp
             self.rear = temp
