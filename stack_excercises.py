@@ -1,5 +1,5 @@
 import os
-from Data_Structures.stack import Stack
+from stack import Stack
 
 def par_checker(symbol_string:str)->bool:
     s = Stack()
@@ -207,7 +207,7 @@ print(direct_infix_evaluator("( 52 + 4 ) * ( 2 - 3 ) / ( 5 - 8 - 1 )"))
 
 
 def calculator():
-    op_string = input("Insert operation string separated by spaces. ex: '1 * ( 2 - 3 ) ")
+    op_string = input("Insert operation string separated by spaces. ex: '1 * ( 2 - 3 ): ")
     try:
         print(direct_infix_evaluator(op_string))
     except:
@@ -216,3 +216,4 @@ def calculator():
 
 os.system('cls' if os.name == 'nt' else 'clear')
 calculator()
+

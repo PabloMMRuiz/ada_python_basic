@@ -1,4 +1,4 @@
-from Data_Structures.stack import Stack
+from stack import Stack
 """Given the following sequence of stack operations, what is the top item on the stack when the
 sequence is complete?"""
 

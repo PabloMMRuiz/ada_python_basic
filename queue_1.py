@@ -1,7 +1,6 @@
 #Renamed to avoid conflic with existing queue implementation
 #TODO: redo with Linked List
-from Data_Structures.linked_list.singly_linked_list import SinglyLinkedList
-
+from singly_linked_list import SinglyLinkedList
 
 class Queue:
     def __init__(self) -> None:
@@ -27,7 +26,7 @@ class QueueLinkedList:
         return True if len(self.items) == 0 else False
     def enqueue(self, item):
         #Add an item to the Queue
-        self.items.append(0, item)
+        self.items.append(item)
     def dequeue(self)->any:
         #Returns, with removal, the queue's top element
         return self.items.pop()

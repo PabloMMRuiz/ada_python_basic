@@ -92,6 +92,12 @@ class SinglyLinkedList:
     
     def append(self, item):
         """Appends an item to the head (index -1) of the list"""
+        if self.head == None:
+            temp = Node(item)
+            self.head = temp
+            self.rear = temp
+            self.length +=1
+            return
         temp = Node(item)
         self.head.set_next(temp)
         temp.set_next(None)
@@ -173,7 +179,7 @@ class SinglyLinkedList:
             return curr_node.get_data()
         
 """
-
+t = Node("a")
 my_list = SinglyLinkedList()
 print(my_list.is_empty())
     
