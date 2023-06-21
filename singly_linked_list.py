@@ -26,25 +26,41 @@ class SinglyLinkedList:
             curr_node = curr_node.get_next()
         return "["+res+"]"
     
-    def __getitem__(self, index:int):
-        if -self.length >=index or index>=self.length:
-            raise IndexError("Index out of range")
-        elif 0<=index: 
-            pos = 0
-            curr_node = self.rear
-            while pos != index:
-                pos +=1
-                curr_node =curr_node.get_next()
-            return curr_node.get_data()
-        else: 
-            index = self.length + index #Index is negative here
-            pos = 0
-            curr_node = self.rear
-            while pos != index:
-                pos +=1
-                curr_node =curr_node.get_next()
-            return curr_node.get_data()
-        
+    def __getitem__(self, index):
+        if type(index) == int:
+            if -self.length >=index or index>=self.length:
+                raise IndexError("Index out of range")
+            elif 0<=index: 
+                pos = 0
+                curr_node = self.rear
+                while pos != index:
+                    pos +=1
+                    curr_node =curr_node.get_next()
+                return curr_node.get_data()
+            else: 
+                index = self.length + index #Index is negative here
+                pos = 0
+                curr_node = self.rear
+                while pos != index:
+                    pos +=1
+                    curr_node =curr_node.get_next()
+                return curr_node.get_data()
+        """elif type(index) == slice:
+            if index.step  == 0:
+                raise ValueError("Slice step cannot be zero")
+            elif (index.step > 0 and index.start>index.stop) or (index.step < 0 and index.start < index.stop):
+                temp = SinglyLinkedList()
+                return temp
+            else:
+                #First we transform start and stop to positive, in-range ints
+                if index.start < 0 :
+                    if index.start < -self.length:
+                        index.start = 0
+                    if index.stop > self.length-1:
+                        index.stop = self.length-1
+                    """
+        #I'm too lazy to finish this: negative step on singly linked lists is a slow task as we can't go backwards: we would need to have O(n*k) efficiency
+        #and traverse the entire list to get every element of the slice. Might eventually write it. #TODO
     def __setitem__(self, index, item):
         if -self.length >=index or index>=self.length:
             raise IndexError("Index out of range")
@@ -180,6 +196,7 @@ class SinglyLinkedList:
             self.length-=1
             return curr_node.get_data()
         
+
 """
 t = Node("a")
 my_list = SinglyLinkedList()

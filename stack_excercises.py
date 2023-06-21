@@ -215,5 +215,21 @@ def calculator():
     calculator()
 
 os.system('cls' if os.name == 'nt' else 'clear')
-calculator()
 
+
+def html_tags_checker(html_string:str)->bool:
+    tags_stack = Stack()
+    html_tag_list = html_string.split(">") #Html "text content" will never have "<" neither ">" in it as they are reserved characters. This is safe
+    for item in html_tag_list:
+        item = item.strip()
+        if "</" in item:
+            if tags_stack.pop() != item[(item.index("</") +2):]:
+                return False
+        elif "<" in item:
+            tags_stack.push(item[(item.index("<")+1):])
+        print(tags_stack.items)
+    if tags_stack.is_empty():
+        return True
+    else:
+        return False
+print(html_tags_checker("<html> <head> <title> Example </title> </head> <body> <h1>Hello, world<p></h1> </p></body></html>"))
