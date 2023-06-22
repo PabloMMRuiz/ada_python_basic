@@ -233,3 +233,4 @@ def html_tags_checker(html_string:str)->bool:
     else:
         return False
 print(html_tags_checker("<html> <head> <title> Example </title> </head> <body> <h1>Hello, world<p></h1> </p></body></html>"))
+print(decimal_to_binary(11   ))
