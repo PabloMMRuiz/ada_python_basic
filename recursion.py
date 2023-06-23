@@ -142,4 +142,15 @@ def main():
     my_points = [[-100, -50], [0, 100], [100, -50]]
     sierpinski(my_points, 4, my_turtle)
     my_win.exitonclick()
-main()
+#main()
+#Tower of Hanoi
+
+def move_disk(fp,tp, height):
+    print("moving disk of size",height,"from",fp,"to",tp)
+def move_tower(height, from_pole, to_pole, with_pole):
+    if height >= 1:
+        move_tower(height - 1, from_pole, with_pole, to_pole)
+        move_disk(from_pole, to_pole, height) #This also takes care of the base case!
+        move_tower(height - 1, with_pole, to_pole, from_pole)
+
+move_tower(3, "A", "C", "B")
