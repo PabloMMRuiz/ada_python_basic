@@ -75,6 +75,7 @@ def palindrome_checker_recursive(test_str:str)->bool:
 print(palindrome_checker_recursive("aibohphobia")) #aibohphobia is the fear of palindromes
 
 
+import math
 import turtle
 import random #Cursed import location eh
 """my_turtle = turtle.Turtle()
@@ -114,7 +115,7 @@ def main():
     t.color("green")
     tree(100,16, "brown",20,10, t)
     my_win.exitonclick()
-
+#main()
 def draw_triangle(points, color, my_turtle:turtle.Turtle):
     my_turtle.fillcolor(color)
     my_turtle.up()
@@ -154,3 +155,81 @@ def move_tower(height, from_pole, to_pole, with_pole):
         move_tower(height - 1, with_pole, to_pole, from_pole)
 
 move_tower(3, "A", "C", "B")
+
+
+#Programming excercises
+
+#Write a recursive function to reverse a list
+
+def list_reverse_recursive(l:list)->list:
+    if len(l) <=1:
+        return l #Base case
+    else:
+        temp = list_reverse_recursive(l[1:]) #Recursive call and progress towards base case
+        temp.append(l[0])
+        return  temp
+print(list_reverse_recursive([1,2,3,4,5,6,7,8,9]))
+
+
+def get_random_point_along_line(p1, p2):
+    x_coord = p1[0] + random.random()*(p2[0]-p1[0])
+    y_coord = (p2[1]-p1[1])/(p2[0]-p1[0]) * (x_coord - p1[0]) + p1[1] #This is the ecuation of the line defined by p1, p2 applied to a point between them
+    return (x_coord, y_coord)
+def fractal_mountain(points, degree, t): #Maybe?
+    draw_triangle(points, "white",t)
+    if degree > 0:
+        p1, p2, p3 = get_random_point_along_line(points[0], points[1]), get_random_point_along_line(points[1], points[2]), get_random_point_along_line(points[2], points[0])
+        fractal_mountain([points[0], p1, p3], degree-1, t)
+        fractal_mountain([points[1], p1, p2], degree-1, t)
+        fractal_mountain([points[2], p2, p3], degree-1, t)
+        fractal_mountain([p1,p2,p3], degree-1, t)
+        
+
+def main():
+    my_turtle = turtle.Turtle()
+    my_win = turtle.Screen()
+    my_points = [[-150, -50], [0, 200], [150, -50]]
+    fractal_mountain(my_points, 4, my_turtle)
+    my_win.exitonclick()
+    #God knows what will come out of this
+
+#main()
+
+def perpendicular_distance(p1, p2, p3): #This is auxiliary for the next function. We use three points in order to have a heigth growth proportional to the length of the side.
+    #This is used to make the mountain grow only outwards:
+    if p1[1] > p3[1]:
+        x_coord = p2[0]+ random.random()*(math.sqrt((p3[1]-p1[1])**2 + (p3[0]-p1[0])**2))/2.75
+    else:
+        x_coord = p2[0]- random.random()*(math.sqrt((p3[1]-p1[1])**2 + (p3[0]-p1[0])**2))/2.75
+    if p3[1] - p1[1] != 0:
+        y_coord = -1/((p3[1]-p1[1])/(p3[0]-p1[0])) * (x_coord - p2[0]) + p2[1]
+    else:
+        y_coord = p1[1] + random.random()*(p3[0]-p1[0])/3
+    return(x_coord, y_coord)
+
+def fractal_growing_mountain(points, degree, t, side=None): #Padre nuestro que estas en el cielo
+    center_point = get_random_point_along_line(points[0], points[1])
+    perturbated_point = perpendicular_distance(points[0], center_point, points[1])
+    """if points[0][0]>perturbated_point[0] or points[1][0] < perturbated_point[0]:
+        return"""
+    draw_triangle([points[0], points[1], perturbated_point], "white", t)
+    if degree > 0:
+        fractal_growing_mountain([points[0], perturbated_point], degree-1, t)
+        fractal_growing_mountain([perturbated_point, points[1]], degree-1, t)
+
+def main():
+    my_turtle = turtle.Turtle()
+    my_win = turtle.Screen()
+    my_points = [[-150, -50],[150, -50]]
+    fractal_growing_mountain(my_points, 4, my_turtle)
+    my_win.exitonclick()
+    #Well I mean it's not that bad... sometimes
+#main()
+
+def fibonacci_recursive(n):
+    if n<=2:
+        return 1
+    else:
+        return fibonacci_recursive(n-1) + fibonacci_recursive(n-2)
+    
+print(fibonacci_recursive(8))
