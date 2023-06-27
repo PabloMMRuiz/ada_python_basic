@@ -233,3 +233,81 @@ def fibonacci_recursive(n):
         return fibonacci_recursive(n-1) + fibonacci_recursive(n-2)
     
 print(fibonacci_recursive(8))
+
+#Aux for the snowflake, which is just this on a triangle
+def koch_curve(length, degree, t:turtle):
+    if degree == 0:
+        t.forward(length)
+    else:
+        koch_curve(length/3, degree-1, t)
+        t.left(60)
+        koch_curve(length/3, degree-1, t)
+        t.right(120)
+        koch_curve(length/3, degree-1, t)
+        t.left(60)
+        koch_curve(length/3, degree-1, t)
+
+
+def koch_snowflake(length, degree, t:turtle):
+    for i in range(3):
+        koch_curve(length, degree, t)
+        t.right(120)
+    
+
+def main():
+    my_turtle = turtle.Turtle()
+    my_win = turtle.Screen()
+    my_turtle.penup()
+    my_turtle.goto((-200, 150))
+    my_turtle.pendown()
+    my_turtle.pencolor("blue")
+    koch_snowflake(600, 4, my_turtle)
+    my_win.exitonclick()
+#main()
+
+
+class r3vector:
+    def __init__(self, coord1, coord2, coord3) -> None:
+        self.coord1 = coord1
+        self.coord2 = coord2
+        self.coord3 = coord3
+    def __add__(self, other):
+        coord1 = self.coord1 + other.coord1
+        coord2 = self.coord2 + other.coord2
+        coord3 = self.coord3 + other.coord3
+        return r3vector(coord1, coord2, coord3)
+    def __sub__(self, other): 
+        coord1 = self.coord1 - other.coord1
+        coord2 = self.coord2 - other.coord2
+        coord3 = self.coord3 - other.coord3
+        return r3vector(coord1, coord2, coord3)
+    
+    def __str__(self) -> str:
+        return f"({self.coord1}, {self.coord2}, {self.coord3})"
+#Done this way to allow for more user-friendly use. The actual solution is the boat_trip() function.
+def cannibal_missionaires_problem(n_cannibals:int, n_missionaires:int):
+    if n_cannibals>n_missionaires:
+        print("Not possible")
+        return
+    else: 
+        boat_trip((n_cannibals, n_missionaires, 1))
+
+def boat_trip(vector:r3vector):
+    if vector == r3vector(0,0,0):
+        return True
+    elif ((vector.coord1 > vector.coord2) and (vector.coord2 !=0)) or ((3-vector.coord1 > 3-vector.coord2) and (3-vector.coord2 != 0)): #Done with 3, will add parameters. This tests wether the cannibals eat the missionaires on either side
+        return False
+    else:
+        print(vector)
+        if vector.coord3 == 0: #Boat on finish side
+            actions = [r3vector(1,0,1), r3vector(2,0,1), r3vector(1,1,1), r3vector(0,1,1), r3vector(0,2,1)]
+            res = boat_trip(vector+actions[0]) or boat_trip(vector+actions[1]) or boat_trip(vector+actions[2]) or boat_trip(vector+actions[3]) or boat_trip(vector+actions[4])
+            if res:
+                print(vector)
+        elif vector.coord3 == 1: #Boat on start side
+            actions = [r3vector(1,0,1), r3vector(2,0,1), r3vector(1,1,1), r3vector(0,1,1), r3vector(0,2,1)]
+            res = boat_trip(vector-actions[0]) or boat_trip(vector-actions[1]) or boat_trip(vector-actions[2]) or boat_trip(vector-actions[3]) or boat_trip(vector-actions[4])
+            if res:
+                print(vector)
+    
+boat_trip(r3vector(3,3,1))
