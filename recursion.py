@@ -281,33 +281,71 @@ class r3vector:
         coord2 = self.coord2 - other.coord2
         coord3 = self.coord3 - other.coord3
         return r3vector(coord1, coord2, coord3)
-    
+    def __hash__(self) -> int:
+        return (self.coord1, self.coord2, self.coord3)
     def __str__(self) -> str:
         return f"({self.coord1}, {self.coord2}, {self.coord3})"
+    
+    def __eq__(self, __value: object) -> bool:
+        if __value.coord1 == self.coord1 and __value.coord2 == self.coord2 and __value.coord3 == self.coord3:
+            return True
+        else:
+            return False
 #Done this way to allow for more user-friendly use. The actual solution is the boat_trip() function.
 def cannibal_missionaires_problem(n_cannibals:int, n_missionaires:int):
     if n_cannibals>n_missionaires:
         print("Not possible")
         return
     else: 
-        boat_trip((n_cannibals, n_missionaires, 1))
-
-def boat_trip(vector:r3vector):
+        boat_trip(r3vector(n_cannibals, n_missionaires, 1), prev_states = [r3vector(3,3,1)])
+pos_actions = [r3vector(1,0,1), r3vector(2,0,1), r3vector(1,1,1), r3vector(0,1,1), r3vector(0,2,1)]
+def boat_trip(vector:r3vector, prev_states:list):
     if vector == r3vector(0,0,0):
         return True
     elif ((vector.coord1 > vector.coord2) and (vector.coord2 !=0)) or ((3-vector.coord1 > 3-vector.coord2) and (3-vector.coord2 != 0)): #Done with 3, will add parameters. This tests wether the cannibals eat the missionaires on either side
         return False
     else:
-        print(vector)
         if vector.coord3 == 0: #Boat on finish side
-            actions = [r3vector(1,0,1), r3vector(2,0,1), r3vector(1,1,1), r3vector(0,1,1), r3vector(0,2,1)]
-            res = boat_trip(vector+actions[0]) or boat_trip(vector+actions[1]) or boat_trip(vector+actions[2]) or boat_trip(vector+actions[3]) or boat_trip(vector+actions[4])
+            useful_actions = []
+            for action in pos_actions:
+                temp = vector + action
+                #print(temp)
+                if  temp not in prev_states and temp.coord2 <4 and temp.coord1 >=0 and temp.coord2 >=0 and 3-temp.coord2 >=0 and 3 - temp.coord1 >=0: #Check that the movement does not imply a cycle and is legal
+                    useful_actions.append(temp)
+                    prev_states.append(temp) #Store the result of the movement so we don't incur in cycles. "Node visited"
+            res = True if True in [boat_trip(action_result, prev_states) for action_result in useful_actions] else False
             if res:
+                print("turn")
                 print(vector)
         elif vector.coord3 == 1: #Boat on start side
-            actions = [r3vector(1,0,1), r3vector(2,0,1), r3vector(1,1,1), r3vector(0,1,1), r3vector(0,2,1)]
-            res = boat_trip(vector-actions[0]) or boat_trip(vector-actions[1]) or boat_trip(vector-actions[2]) or boat_trip(vector-actions[3]) or boat_trip(vector-actions[4])
+            useful_actions = []
+            for action in pos_actions:
+                temp = vector - action
+                #print(temp)
+                if  temp not in prev_states and temp.coord2 <4 and temp.coord1 >=0 and temp.coord2 >=0 and 3-temp.coord2 >=0 and 3 - temp.coord1 >=0: 
+                    useful_actions.append(temp)
+                    prev_states.append(temp)
+            res = True if True in [boat_trip(action_result, prev_states) for action_result in useful_actions] else False
             if res:
+                print("turn")
                 print(vector)
-    
-boat_trip(r3vector(3,3,1))
+    return res
+hekp = []
+temp =  r3vector(3,3,1)
+hekp.append(temp)
+boat_trip(r3vector(3,3,1), hekp) 
+#Dios mio
+
+
+def pascalia_triangle(n:int):
+    if n == 1:
+        res = [1]
+    else:
+        res = []
+        temp = pascalia_triangle(n-1) #It's done here instead of inside zip so it doesn't become exponential
+        for a, b in zip([0] + temp, temp+[0]):
+            res.append(a+b)
+    print(res)
+    return(res)
+
+pascalia_triangle(8)
