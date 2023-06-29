@@ -55,7 +55,7 @@ def integer_to_base_string(n:int, base:int, lookup_string = "0123456789ABCDEF")-
     
 print(integer_to_base_string(29468, 16))
 
-#Self cehck page 122
+#Self check page 122
 #Write a function that takes a string as a parameter and returns a new string that is the reverse of the old string.
 
 def string_inversion_recursive(rev_string:str)->str:
@@ -89,8 +89,8 @@ def draw_spiral(my_turtle, line_len):
 #my_win.exitonclick()"""
 
 #Modified following self check on page 130
-def tree(branch_len, thickness, colour, top_sub, min_sub, t: turtle): #Top and ,im sub are a personal modification so we have more leaves and green branches:
-    #Each call substracts a bit less from the branch_len. It is ensured to reach 0. Too lazy to screen for erroes, you should make sure top>min
+def tree(branch_len, thickness, colour, top_sub, min_sub, t: turtle): #Top and min sub are a personal modification so we have more leaves and green branches:
+    #Each call substracts a bit less from the branch_len. It is ensured to reach 0. Too lazy to screen for errors, you should make sure top>min
     t.pensize(thickness)
     t.pencolor(colour)
     if branch_len > 5 and thickness >=0:
@@ -196,15 +196,15 @@ def main():
 #main()
 
 def perpendicular_distance(p1, p2, p3): #This is auxiliary for the next function. We use three points in order to have a heigth growth proportional to the length of the side.
-    #This is used to make the mountain grow only outwards:
+    #This is used to make the mountain grow only outwards (outwards as in triangles will not go inside other trianges):
     if p1[1] > p3[1]:
         x_coord = p2[0]+ random.random()*(math.sqrt((p3[1]-p1[1])**2 + (p3[0]-p1[0])**2))/2.75
     else:
         x_coord = p2[0]- random.random()*(math.sqrt((p3[1]-p1[1])**2 + (p3[0]-p1[0])**2))/2.75
     if p3[1] - p1[1] != 0:
-        y_coord = -1/((p3[1]-p1[1])/(p3[0]-p1[0])) * (x_coord - p2[0]) + p2[1]
+        y_coord = -1/((p3[1]-p1[1])/(p3[0]-p1[0])) * (x_coord - p2[0]) + p2[1] #This is the normal line to the existing mountain's flank.
     else:
-        y_coord = p1[1] + random.random()*(p3[0]-p1[0])/3
+        y_coord = p1[1] + random.random()*(p3[0]-p1[0])/3 
     return(x_coord, y_coord)
 
 def fractal_growing_mountain(points, degree, t, side=None): #Padre nuestro que estas en el cielo
@@ -212,6 +212,7 @@ def fractal_growing_mountain(points, degree, t, side=None): #Padre nuestro que e
     perturbated_point = perpendicular_distance(points[0], center_point, points[1])
     """if points[0][0]>perturbated_point[0] or points[1][0] < perturbated_point[0]:
         return"""
+    #Previous line can be used to make the mountain grow only inwards but it tends to stop growth too soon
     draw_triangle([points[0], points[1], perturbated_point], "white", t)
     if degree > 0:
         fractal_growing_mountain([points[0], perturbated_point], degree-1, t)
@@ -226,6 +227,7 @@ def main():
     #Well I mean it's not that bad... sometimes
 #main()
 
+#The pure recursion fibonacci is one of the slowest methods to calculate it. For a better implementation, look into staircase problem in "daily coding problems"
 def fibonacci_recursive(n):
     if n<=2:
         return 1
@@ -251,7 +253,7 @@ def koch_curve(length, degree, t:turtle):
 def koch_snowflake(length, degree, t:turtle):
     for i in range(3):
         koch_curve(length, degree, t)
-        t.right(120)
+        t.right(120) #Think about where the turtle is pointing. We don't do 360-60, but 180-60
     
 
 def main():
@@ -261,7 +263,7 @@ def main():
     my_turtle.goto((-200, 150))
     my_turtle.pendown()
     my_turtle.pencolor("blue")
-    koch_snowflake(600, 4, my_turtle)
+    koch_snowflake(500, 5, my_turtle)
     my_win.exitonclick()
 #main()
 
@@ -298,8 +300,8 @@ def cannibal_missionaires_problem(n_cannibals:int, n_missionaires:int):
         return
     else: 
         boat_trip(r3vector(n_cannibals, n_missionaires, 1), prev_states = [r3vector(3,3,1)])
-pos_actions = [r3vector(1,0,1), r3vector(2,0,1), r3vector(1,1,1), r3vector(0,1,1), r3vector(0,2,1)]
-def boat_trip(vector:r3vector, prev_states:list):
+pos_actions = [r3vector(1,0,1), r3vector(2,0,1), r3vector(1,1,1), r3vector(0,1,1), r3vector(0,2,1)] #This should probably go inside the function, but keeping it out allows for faster debugging
+def boat_trip(vector:r3vector, prev_states:list): 
     if vector == r3vector(0,0,0):
         return True
     elif ((vector.coord1 > vector.coord2) and (vector.coord2 !=0)) or ((3-vector.coord1 > 3-vector.coord2) and (3-vector.coord2 != 0)): #Done with 3, will add parameters. This tests wether the cannibals eat the missionaires on either side
@@ -309,14 +311,12 @@ def boat_trip(vector:r3vector, prev_states:list):
             useful_actions = []
             for action in pos_actions:
                 temp = vector + action
-                #print(temp)
                 if  temp not in prev_states and temp.coord2 <4 and temp.coord1 >=0 and temp.coord2 >=0 and 3-temp.coord2 >=0 and 3 - temp.coord1 >=0: #Check that the movement does not imply a cycle and is legal
                     useful_actions.append(temp)
                     prev_states.append(temp) #Store the result of the movement so we don't incur in cycles. "Node visited"
             res = True if True in [boat_trip(action_result, prev_states) for action_result in useful_actions] else False
             if res:
-                print("turn")
-                print(vector)
+                print(vector) #Because I put the print statements here, the results will be reversed. We could use a stack outside this funcion to keep the solution
         elif vector.coord3 == 1: #Boat on start side
             useful_actions = []
             for action in pos_actions:
@@ -327,7 +327,6 @@ def boat_trip(vector:r3vector, prev_states:list):
                     prev_states.append(temp)
             res = True if True in [boat_trip(action_result, prev_states) for action_result in useful_actions] else False
             if res:
-                print("turn")
                 print(vector)
     return res
 hekp = []
@@ -349,3 +348,5 @@ def pascalia_triangle(n:int):
     return(res)
 
 pascalia_triangle(8)
+
+main()
