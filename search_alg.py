@@ -114,6 +114,23 @@ contents of the has table after all the keys have been inserted using linear pro
 2.
 """
 
+
+def sort_test(f):
+    print(f([1,2,3,4,5]))
+    for i in range(200):
+        l = [random.randint(1,2000) for x in range(50)]
+        print(l)
+        l_sorted = f(l)
+        print(l_sorted)
+        l.sort()
+        print(l)
+        print(l == l_sorted)
+        if l !=l_sorted: 
+            print("mal")
+            break
+        print(f"#############################\n")
+    print(f)
+
 def bubble_sort(l:list)->list:
     """Sort the list in ascending order in place. Also returns the sorted list"""
     """Efficiency: O(n^2). We do n-1 passes (worst case), and do n-1 comparisons on the first pass, n-2 on the second...
@@ -133,19 +150,7 @@ def bubble_sort(l:list)->list:
 
 print(bubble_sort([5,2,4,3,5]))
 
-"""#Bit of a test
-for i in range(200):
-    l = [random.randint(1,2000) for x in range(50)]
-    print(l)
-    l_sorted = bubble_sort(l)
-    print(l_sorted)
-    l.sort()
-    print(l)
-    print(l == l_sorted)
-    if l !=l_sorted: 
-        print("mal")
-        break
-    print(f"#############################\n")"""
+#sort_test(bubble_sort)
 
 
 """Self Check
@@ -181,21 +186,8 @@ def selection_sort(l:list)->list:
             break
     return l
 
-"""print(selection_sort([1,2,4,5,3]))
-#Bit of a test
-for i in range(200):
-    l = [random.randint(1,2000) for x in range(50)]
-    print(l)
-    l_sorted = selection_sort(l)
-    print(l_sorted)
-    l.sort()
-    print(l)
-    print(l == l_sorted)
-    if l !=l_sorted: 
-        print("mal")
-        break
-    print(f"#############################\n")
-"""
+#sort_test(selection_sort)
+
 """
 #Bubble vs selection:
 import timeit
@@ -213,4 +205,158 @@ list represents the partially sorted list after three complete passes of selecti
 2. [7, 11, 12, 14, 19, 1, 6, 18, 8, 20]
 3. [11, 7, 12, 13, 1, 6, 8, 18, 19, 20]
 4. [11, 7, 12, 14, 8, 1, 6, 18, 19, 20]
+
+4: selection sort changes only x*2 items in x passes: the local max and the position it should go in
+
 """
+
+def insertion_sort(l:list)->list:
+    """Sort the list in ascending order in place. Also returns the sorted list"""
+    """In terms of efficiency it is again the sum of the first n integers: O(n^2). It does however less operations than bubble sort, which has
+    a pretty similar idea. It is faster than bubble sort, but still the number of operations maekes it costlier than selection, even if the operations
+    themselves are lighter"""
+    for i in range(1, len(l)):
+        current_value=l[i]
+        pos = i
+        while pos >0 and l[pos-1] > current_value:
+            l[pos] = l[pos-1]
+            pos -=1
+        l[pos] = current_value
+    return l
+
+#sort_test(insertion_sort)
+
+"""
+import timeit
+t1 = timeit.Timer("bubble_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import bubble_sort,random")
+print(f"Bubble sort: {t1.timeit(1000)}ms")
+t2 = timeit.Timer("selection_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import selection_sort,random")
+print(f"Selection sort: {t2.timeit(1000)}ms")
+t3 = timeit.Timer("insertion_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import insertion_sort,random")
+print(f"Insertion sort: {t3.timeit(1000)}ms")"""
+
+
+"""
+Self Check
+Suppose you have the following list of numbers to sort: [15, 5, 4, 18, 12, 19, 14, 10, 8, 20] which
+list represents the partially sorted list after three complete passes of insertion sort?
+1. [4, 5, 12, 15, 14, 10, 8, 18, 19, 20]
+2. [15, 5, 4, 10, 12, 8, 14, 18, 19, 20]
+3. [4, 5, 15, 18, 12, 19, 14, 10, 8, 20]
+4. [15, 5, 4, 18, 12, 19, 14, 8, 10, 20]
+
+3: k passes of an insertion sort sort the first k items
+"""
+def gap_insertion_sort(l, start, gap): #Auxiliar function for shell sort
+    for i in range(start + gap, len(l), gap):
+        current_value = l[i]
+        position = i
+        while position >= gap and l[position - gap] > current_value:
+            l[position] = l[position - gap]
+            position = position - gap
+        l[position] = current_value
+
+
+def shell_sort(l:list)->list:
+    """Sort the list in ascending order in place. Also returns the sorted list"""
+    """Now a very important idea is that sublists are not the first k elements, but elements taken by jumping k spaces. This is what makes it
+    so efficient. While this gets into way better times than the rest, it is still not comparable to python's native sort: we should also take overhead
+    and language into account. Shell sort is between O(n^2) and O(n*2log(n))
+    """
+    sublist_count = len(l)//2
+    while sublist_count >0:
+        for start_position in range(sublist_count):
+            gap_insertion_sort(l, start_position, sublist_count)
+        sublist_count = sublist_count//2
+    return l
+shell_sort([54, 26, 93, 17, 77, 31, 44, 55, 20])
+"""Self Check
+Given the following list of numbers: [5, 16, 20, 12, 3, 8, 9, 17, 19, 7] Which answer illustrates
+the contents of the list after all swapping is complete for a gap size of 3?
+1. [5, 3, 8, 7, 16, 19, 9, 17, 20, 12]
+2. [3, 7, 5, 8, 9, 12, 19, 16, 20, 17]
+3. [3, 5, 7, 8, 9, 12, 16, 17, 19, 20]
+4. [5, 16, 20, 3, 8, 12, 9, 17, 20, 7]
+
+1
+"""
+
+"""import timeit
+t1 = timeit.Timer("bubble_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import bubble_sort,random")
+print(f"Bubble sort: {t1.timeit(1000)}ms")
+t2 = timeit.Timer("selection_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import selection_sort,random")
+print(f"Selection sort: {t2.timeit(1000)}ms")
+t3 = timeit.Timer("insertion_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import insertion_sort,random")
+print(f"Insertion sort: {t3.timeit(1000)}ms")
+t4 = timeit.Timer("shell_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import shell_sort,random")
+print(f"Shell sort: {t4.timeit(1000)}ms")
+t5 = timeit.Timer("sorted([random.randint(1,2000) for x in range(300)])", "from __main__ import shell_sort,random")
+print(f"Shell sort: {t5.timeit(1000)}ms")
+
+"""
+print([1,2,3,4][0:1])
+
+def merge_sort(l:list, left_index = 0, right_index = None)->list:
+    if right_index == None:
+        right_index = len(l)
+    #Checker for the starting, *not base*, case
+    if right_index>left_index+1:
+        mid_index = (left_index + right_index)//2
+        l = merge_sort(l,left_index, mid_index) + merge_sort(l,mid_index, right_index) #Division and recursive call
+        i=left_index % (right_index-left_index)
+        j=mid_index% (right_index-left_index)
+        k=left_index% (right_index-left_index)
+        temp = [None]*(right_index-left_index)
+        while i <mid_index % (right_index-left_index)and j <= (right_index+1)% (right_index-left_index):
+            if l[i] < l[j]:
+                temp[k] = l[i]
+                i+=1
+            else:
+                temp[k] = l[j]
+                j+=1
+            k+=1
+        while i < mid_index% (right_index-left_index):
+            temp[k] = l[i]
+            i+=1
+            k+=1
+        while j <= (right_index)% (right_index-left_index):
+            temp[k] = l[j]
+            j+=1
+            k+=1
+        return temp
+    return l[left_index:right_index]
+
+
+
+def merge_sort(l:list, left_index = 0, right_index = None)->list:
+    if right_index == None:
+        right_index = len(l)
+    #Checker for the starting, *not base*, case
+    mid_index = (left_index + right_index)//2
+    if left_index < right_index:
+        merge_sort(l, left_index, mid_index)
+        merge_sort(l, mid_index+1, right_index)
+
+    i=left_index
+    j=mid_index+1
+    k=0
+    temp = [None]*(right_index-left_index+1)
+    while i <=mid_index and j <= right_index:
+        if l[i] < l[j]:
+            temp[k] = l[i]
+            i+=1
+        else:
+            temp[k] = l[j]
+            j+=1
+        k+=1
+    if i <= mid_index:
+        temp[k:] = l[i:mid_index+1]
+    if j <= right_index:
+        temp[k:] = l[j:right_index+1]
+    k=0
+    while left_index <= right_index:
+        l[left_index] = temp[k]
+        left_index+=1
+        k+=1
+
+print(merge_sort([2,1,3,4]))
