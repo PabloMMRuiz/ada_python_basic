@@ -296,67 +296,86 @@ print(f"Shell sort: {t5.timeit(1000)}ms")
 """
 print([1,2,3,4][0:1])
 
-def merge_sort(l:list, left_index = 0, right_index = None)->list:
-    if right_index == None:
-        right_index = len(l)
-    #Checker for the starting, *not base*, case
-    if right_index>left_index+1:
-        mid_index = (left_index + right_index)//2
-        l = merge_sort(l,left_index, mid_index) + merge_sort(l,mid_index, right_index) #Division and recursive call
-        i=left_index % (right_index-left_index)
-        j=mid_index% (right_index-left_index)
-        k=left_index% (right_index-left_index)
-        temp = [None]*(right_index-left_index)
-        while i <mid_index % (right_index-left_index)and j <= (right_index+1)% (right_index-left_index):
-            if l[i] < l[j]:
-                temp[k] = l[i]
-                i+=1
-            else:
-                temp[k] = l[j]
+def merge_sort(l:list)->list:
+    """Sorts a list in-place"""
+    """Efficiency: n log(n). However, the space efficiency is way worse than the algorithms we saw before, and even if we apply index ussage as recomended,
+    we would still need some kind of auxiliary space to avoid overwriting the smaller list while merging. This makes the algorithm actually slower in practice"""
+    if len(l) > 1:
+        mid = len(l)//2
+        left_half = l[:mid]
+        right_half = l[mid:]
+
+        merge_sort(left_half)
+        merge_sort(right_half)
+
+        i,j,k=0,0,0
+
+        while i < len(left_half) and j < len(right_half):
+            if left_half[i] > right_half[j]:
+                l[k] = right_half[j]
                 j+=1
+            else:
+                l[k] = left_half[i]
+                i+=1
             k+=1
-        while i < mid_index% (right_index-left_index):
-            temp[k] = l[i]
+
+        while i < len(left_half):
+            l[k] = left_half[i]
             i+=1
             k+=1
-        while j <= (right_index)% (right_index-left_index):
-            temp[k] = l[j]
+        
+        while j < len(right_half):
+            l[k] = right_half[j]
             j+=1
             k+=1
-        return temp
-    return l[left_index:right_index]
+
+def return_merge_sort(l:list)->list:
+    merge_sort(l)
+    return l
 
 
 
-def merge_sort(l:list, left_index = 0, right_index = None)->list:
-    if right_index == None:
-        right_index = len(l)
-    #Checker for the starting, *not base*, case
-    mid_index = (left_index + right_index)//2
-    if left_index < right_index:
-        merge_sort(l, left_index, mid_index)
-        merge_sort(l, mid_index+1, right_index)
+a = [2,1,3,4,7]
+print(a[:2])
+merge_sort(a)
+print(a)
+#sort_test(return_merge_sort)
 
-    i=left_index
-    j=mid_index+1
-    k=0
-    temp = [None]*(right_index-left_index+1)
-    while i <=mid_index and j <= right_index:
-        if l[i] < l[j]:
-            temp[k] = l[i]
-            i+=1
-        else:
-            temp[k] = l[j]
-            j+=1
-        k+=1
-    if i <= mid_index:
-        temp[k:] = l[i:mid_index+1]
-    if j <= right_index:
-        temp[k:] = l[j:right_index+1]
-    k=0
-    while left_index <= right_index:
-        l[left_index] = temp[k]
-        left_index+=1
-        k+=1
+import timeit
+t1 = timeit.Timer("bubble_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import bubble_sort,random")
+print(f"Bubble sort: {t1.timeit(1000)}ms")
+t2 = timeit.Timer("selection_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import selection_sort,random")
+print(f"Selection sort: {t2.timeit(1000)}ms")
+t3 = timeit.Timer("insertion_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import insertion_sort,random")
+print(f"Insertion sort: {t3.timeit(1000)}ms")
+t4 = timeit.Timer("shell_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import shell_sort,random")
+print(f"Shell sort: {t4.timeit(1000)}ms")
+t5 = timeit.Timer("sorted([random.randint(1,2000) for x in range(300)])", "from __main__ import shell_sort,random")
+print(f"Python sort: {t5.timeit(1000)}ms")
+t6 = timeit.Timer("merge_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import merge_sort,random")
+print(f"Merge sort: {t6.timeit(1000)}ms")
 
-print(merge_sort([2,1,3,4]))
+
+#NOTE: Python's native sort is probably built in C, so it will always be faster than algorithms with the same efficiency
+"""
+Self Check
+Given the following list of numbers: [21, 1, 26, 45, 29, 28, 2, 9, 16, 49, 39, 27, 43, 34, 46, 40]
+which answer illustrates the list to be sorted after 3 recursive calls to mergesort?
+1. [16, 49, 39, 27, 43, 34, 46, 40]
+2. [21, 1]
+3. [21, 1, 26, 45]
+4. [21]
+
+2: [21,1]: the length of the list to sort goes from 8 to 4 to 2
+
+
+Given the following list of numbers: [21, 1, 26, 45, 29, 28, 2, 9, 16, 49, 39, 27, 43, 34, 46, 40]
+which answer illustrates the first two lists to be merged?
+1. [21, 1] and [26, 45]
+2. [[1, 2, 9, 21, 26, 28, 29, 45] and [16, 27, 34, 39, 40, 43, 46, 49]
+3. [21] and [1]
+4. [9] and [16]
+
+3: 21 and 1 as they are the first two elements. The first series of merges occurs at element level.
+
+"""
