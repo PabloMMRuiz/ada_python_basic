@@ -341,7 +341,7 @@ merge_sort(a)
 print(a)
 #sort_test(return_merge_sort)
 
-import timeit
+"""import timeit
 t1 = timeit.Timer("bubble_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import bubble_sort,random")
 print(f"Bubble sort: {t1.timeit(1000)}ms")
 t2 = timeit.Timer("selection_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import selection_sort,random")
@@ -354,7 +354,7 @@ t5 = timeit.Timer("sorted([random.randint(1,2000) for x in range(300)])", "from 
 print(f"Python sort: {t5.timeit(1000)}ms")
 t6 = timeit.Timer("merge_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import merge_sort,random")
 print(f"Merge sort: {t6.timeit(1000)}ms")
-
+"""
 
 #NOTE: Python's native sort is probably built in C, so it will always be faster than algorithms with the same efficiency
 """
@@ -378,4 +378,86 @@ which answer illustrates the first two lists to be merged?
 
 3: 21 and 1 as they are the first two elements. The first series of merges occurs at element level.
 
+"""
+def _partition(l, first, last):
+    middle_point = (first+last)//2
+
+    pivot_tupple = sorted([(l[first], first), (l[last], last), (l[middle_point], middle_point)])[1] #Should probably find a different way of calculating the median, for
+    #looks if anything
+    pivot = pivot_tupple[0]
+    pivot_position = pivot_tupple[1]
+    l[pivot_position], l[first] = l[first], l[pivot_position]
+    left_pointer = first+1 #Don't use the pivot as mark value!
+    right_pointer = last
+
+    while left_pointer <= right_pointer:
+        
+        while left_pointer<= right_pointer and l[left_pointer] <= pivot: #Closing in on two exchange positions
+            left_pointer +=1
+        while left_pointer <= right_pointer and l[right_pointer] >= pivot:
+            right_pointer -=1
+        if left_pointer > right_pointer:
+            break #Dont perform an exchange if the pointers are on incorrect positions
+        else:
+            l[left_pointer], l[right_pointer] = l[right_pointer], l[left_pointer]
+    l[first], l[right_pointer] = l[right_pointer], l[first] #We depend on the right pointer as it will never produce index errors: left moves first so it might
+    return right_pointer
+def _quicksort(l, first, last):
+    if first < last: #Check for list length
+        split_point = _partition(l, first, last)
+
+        _quicksort(l, first, split_point-1) #So we don't move the used pivot
+        _quicksort(l, split_point+1, last)
+
+def quick_sort(l:list)->list:
+    """Sort the list in ascending order in place. Also returns the sorted list"""
+    """Efficiency: best: n log(n). Worst: n^2. It depends on how near the median the chosen pivot is. Using the median of three strategy, we can usually avoid cuadratic performance,
+    but it is not 100% safe"""
+    _quicksort(l, 0, len(l)-1)
+    return l
+
+print(quick_sort([4,2,6,19,2,34,7,0,9]))
+sort_test(quick_sort)
+"""
+import timeit
+t1 = timeit.Timer("bubble_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import bubble_sort,random")
+print(f"Bubble sort: {t1.timeit(1000)}ms")
+t2 = timeit.Timer("selection_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import selection_sort,random")
+print(f"Selection sort: {t2.timeit(1000)}ms")
+t3 = timeit.Timer("insertion_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import insertion_sort,random")
+print(f"Insertion sort: {t3.timeit(1000)}ms")
+t4 = timeit.Timer("shell_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import shell_sort,random")
+print(f"Shell sort: {t4.timeit(1000)}ms")
+t5 = timeit.Timer("sorted([random.randint(1,2000) for x in range(300)])", "from __main__ import shell_sort,random")
+print(f"Python sort: {t5.timeit(1000)}ms")
+t6 = timeit.Timer("merge_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import merge_sort,random")
+print(f"Merge sort: {t6.timeit(1000)}ms")
+t7 = timeit.Timer("quick_sort([random.randint(1,2000) for x in range(300)])", "from __main__ import quick_sort,random")
+print(f"Quick sort: {t7.timeit(1000)}ms")"""
+
+
+"""Given the following list of numbers [14, 17, 13, 15, 19, 10, 3, 16, 9, 12] which answer shows the
+contents of the list after the second partitioning according to the quicksort algorithm?
+1. [9, 3, 10, 13, 12]
+2. [9, 3, 10, 13, 12, 14]
+3. [9, 3, 10, 13, 12, 14, 17, 16, 15, 19]
+4. [9, 3, 10, 13, 12, 14, 19, 16, 15, 17]
+
+3: We can use just the pivots position to chose: 14, 3 and 19 will be pivots, so they need to be in 'apropiate' positions
+
+Given the following list of numbers [1, 20, 11, 5, 2, 9, 16, 14, 13, 19] what would be the first
+pivot value using the median of 3 method?
+1. 1
+2. 9
+3. 16
+4. 19
+
+2: 9
+Which of the following sort algorithms are guaranteed to be O(n log n) even in the worst case?
+1. Shell Sort
+2. Quick Sort
+3. Merge Sort
+4. Insertion Sort
+
+3: Merge sort. Shell sort and quick sort depend on certain non modifiable choices that will slow the algorithm down sometimes.
 """
