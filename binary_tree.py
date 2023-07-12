@@ -32,6 +32,8 @@ class BinaryTree:
     def get_root_val(self):
         return self.key
     
+
+
 r = BinaryTree("a")
 
 print(r.get_root_val())
@@ -44,3 +46,21 @@ print(r.get_right_child())
 print(r.get_right_child().get_root_val())
 r.get_right_child().set_root_val('hello')
 print(r.get_right_child().get_root_val())
+r.get_right_child().insert_left("nooo")
+
+def show_tree(t:BinaryTree, ):
+    res = ""
+    res += t.get_root_val()
+    
+    if t.get_left_child() != None:
+        res +="("
+        res += show_tree(t.get_left_child())
+        res +=")"
+    if t.get_right_child() != None:
+        res +="("
+        res += show_tree(t.get_right_child())
+        res +=")"
+
+    return res
+print("aa")
+print(show_tree(r))
