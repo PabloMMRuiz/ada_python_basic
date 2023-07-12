@@ -70,3 +70,34 @@ insert_left_child(get_right_child(self_check), binary_tree("e"))
 insert_right_child(get_right_child(self_check), binary_tree("f"))
 
 print(self_check)
+
+from stack import Stack
+from binary_tree import BinaryTree
+
+def build_parse_tree(exp:str):
+    item_list = exp.split()
+    parent_stack = Stack() #Could also do a doubly linked graph...
+    res_tree = BinaryTree("Start")
+    parent_stack.push(res_tree)
+    curr_root = res_tree
+    #Because of our method for adding left childs, we are not really relying on operation priority: parenthesis are needed for every operation
+    for e in item_list:
+        if e == "(":
+            curr_root.insert_left("")
+            parent_stack.push(curr_root)
+            curr_root = curr_root.get_left_child()
+        elif e not in ["+", "-", "*", "/"]:
+            curr_root.set_root_val(e)
+            curr_root = parent_stack.pop()
+        elif e in ["+", "-", "*", "/"]:
+            curr_root.set_root_val(e)
+            curr_root.insert_right("")
+            parent_stack.push(curr_root)
+            curr_root = curr_root.get_right_child()
+        elif e == ")":
+            curr_root = parent_stack.pop()
+        else:
+            raise ValueError("Unknown operator or operand")
+        
+pt = build_parse_tree("( ( 10 + 5 ) * 3 )")
+print("A")
