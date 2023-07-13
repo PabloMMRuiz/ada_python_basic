@@ -32,6 +32,12 @@ class BinaryTree:
     def get_root_val(self):
         return self.key
     
+    def preorder(self):
+        print(self.key)
+        if self.left_child:
+            self.left_child.preorder()
+        if self.right_child:
+            self.right_child.preorder()
 
 
 r = BinaryTree("a")
@@ -50,17 +56,18 @@ r.get_right_child().insert_left("nooo")
 
 def show_tree(t:BinaryTree, ):
     res = ""
-    res += t.get_root_val()
+    res += str(t.get_root_val())
     
     if t.get_left_child() != None:
-        res +="("
+        res +="["
         res += show_tree(t.get_left_child())
-        res +=")"
+        res +="]"
     if t.get_right_child() != None:
-        res +="("
+        res +="["
         res += show_tree(t.get_right_child())
-        res +=")"
+        res +="]"
 
     return res
 print("aa")
 print(show_tree(r))
+r.preorder()

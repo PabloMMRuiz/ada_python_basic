@@ -73,7 +73,7 @@ print(self_check)
 
 from stack import Stack
 from binary_tree import BinaryTree
-
+from binary_tree import show_tree
 def build_parse_tree(exp:str):
     item_list = exp.split()
     parent_stack = Stack() #Could also do a doubly linked graph...
@@ -86,8 +86,8 @@ def build_parse_tree(exp:str):
             curr_root.insert_left("")
             parent_stack.push(curr_root)
             curr_root = curr_root.get_left_child()
-        elif e not in ["+", "-", "*", "/"]:
-            curr_root.set_root_val(e)
+        elif e not in ["+", "-", "*", "/",")"]:
+            curr_root.set_root_val(int(e))
             curr_root = parent_stack.pop()
         elif e in ["+", "-", "*", "/"]:
             curr_root.set_root_val(e)
@@ -98,6 +98,76 @@ def build_parse_tree(exp:str):
             curr_root = parent_stack.pop()
         else:
             raise ValueError("Unknown operator or operand")
-        
-pt = build_parse_tree("( ( 10 + 5 ) * 3 )")
+    return res_tree  
+pt = build_parse_tree("( ( ( 10 / 2 ) - ( 5 * 2 ) ) * 3 )")
 print("A")
+print(show_tree(pt))
+
+def aux_operate(operand_1, operand_2, operator):
+    if operator in "+-*/^":
+            try: #Since this is designed to work with stacks, we need to invert elements at some point for substraction and multiplication
+                second_op = float(operand_2)
+                first_op = float(operand_1)
+            except:
+                raise TypeError("Unknown value for conversion")
+            if operator == "+":
+                return(first_op+second_op)
+            elif operator == "-":
+                return(first_op-second_op)
+            elif operator == "*":
+                return(first_op*second_op)
+            elif operator == "/":
+                if second_op == 0:
+                    raise ZeroDivisionError()
+                return(first_op/second_op)
+            elif operator == "^":
+                return(first_op**second_op)
+    else:
+        raise ValueError("Unknown operand")
+
+
+def parse_tree_evaluator(t:BinaryTree):
+    if t.get_left_child() == None: #There isn't actually a need to test for both childs: all operators used here are binary, so a correct operator node always has two operand children
+        return t.get_root_val()
+    else:
+        return aux_operate(parse_tree_evaluator(t.get_left_child()), parse_tree_evaluator(t.get_right_child()), t.get_root_val())
+    
+print(parse_tree_evaluator(pt))
+
+
+def preorder_traversal(t:BinaryTree): #This is what I wrote on show_tree
+    if t:
+        print(t.get_root_val())
+        preorder_traversal(t.get_left_child())
+        preorder_traversal(t.get_right_child())
+
+
+def inorder_traversal(t:BinaryTree):
+    if t:
+        inorder_traversal(t.get_left_child())
+        print(t.get_root_val())
+        inorder_traversal(t.get_right_child())
+
+
+def postorder_traversal(t:BinaryTree):
+    if t:
+        postorder_traversal(t.get_left_child())
+        postorder_traversal(t.get_right_child())
+        print(t.get_root_val())
+
+print("Preorder")
+preorder_traversal(pt)
+print(f"\nPostorder traversal")
+postorder_traversal(pt)
+print(f"\nInorder traversal")
+inorder_traversal(pt)
+
+def print_exp(tree):
+    str_val = ""
+    if tree:
+        str_val = '(' + print_exp(tree.get_left_child())
+        str_val = str_val + str(tree.get_root_val())
+        str_val = str_val + print_exp(tree.get_right_child()) + ')'
+    return str_val
+
+print(print_exp(pt))
