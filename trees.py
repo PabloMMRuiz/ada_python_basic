@@ -135,7 +135,7 @@ def parse_tree_evaluator(t:BinaryTree):
 print(parse_tree_evaluator(pt))
 
 
-def preorder_traversal(t:BinaryTree): #This is what I wrote on show_tree
+def preorder_traversal(t:BinaryTree): #This is what I wrote on show_tree. It is also "true DFS", although all of them kind of are
     if t:
         print(t.get_root_val())
         preorder_traversal(t.get_left_child())
