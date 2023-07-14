@@ -41,6 +41,39 @@ class TreeNode:
         if self.has_right_child():
             self.right_child.parent = self
 
+    def find_min(self):
+        curr_node = self
+        while curr_node.get_left_child():
+            curr_node = curr_node.left_child
+        return curr_node
+
+        """if self.get_left_child(): recursive way of doing it: it does incur on overhead
+            return self.left_child.find_min()
+        else:
+            return self"""
+
+    def find_succesor(self):
+        return self.right_child.find_min() #This function, as far as the excercises in the book are concerned, is only used to help delete nodes in
+                #a specific case: when the node has both children. So it is not necesary to cover the posibility of it not having a right children
+    def splice_out(self): #Remember that this function is to be used when a node has a maximum of 1 child
+        if self.is_leaf():
+            if self.is_left_child():
+                self.parent.left_child = None
+            else:
+                self.parent.right_child = None
+        elif self.get_left_child():
+            if self.is_left_child():
+                self.parent.left_child = self.left_child
+            else:
+                self.parent.right_child = self.left_child
+            self.left_child.parent = self.parent
+        else:
+            if self.is_left_child():
+                self.parent.left_child = self.right_child
+            else:
+                self.parent.right_child = self.right_child
+            self.right_child.parent = self.parent
+
 #So why use Search Trees when we have binary search? Because in Python lists, insertion is O(n), and in linked list, traversal is.
 class BinarySearchTree:
     def __init__(self) -> None:
@@ -102,6 +135,57 @@ class BinarySearchTree:
             return True
         else:
             return False
+
+
+    def delete(self, k):
+        if self.size > 1:
+            node_to_delete = self._get(k, self.root)
+            if node_to_delete:
+                self.remove(node_to_delete)
+                self.size -=1
+            else:
+                raise KeyError()
+        elif self.size == 1 and self.root.key == k:
+            self.root = None
+            self.size -=1
+        else:
+            raise KeyError()
+
+
+    def __delitem__(self, k):
+        self.delete(k)
+
+    def remove(self, node_to_remove: TreeNode):
+        if node_to_remove.is_leaf(): #If the node is a leaf we just need to remove the parent's link to it
+            if node_to_remove.parent.left_child == node_to_remove:
+                node_to_remove.parent.left_child = None
+            else:
+                node_to_remove.parent.right_child = None
+        elif node_to_remove.has_both_chilren():
+            succ = node_to_remove.find_succesor()
+            succ.splice_out()
+            node_to_remove.key = succ.key
+            node_to_remove.payload = succ.payload
+        else:
+            if node_to_remove.get_left_child():
+                if node_to_remove.is_left_child():
+                    node_to_remove.left_child.parent = node_to_remove.parent
+                    node_to_remove.parent.left_child = node_to_remove.left_child
+                elif node_to_remove.is_right_child():
+                    node_to_remove.left_child.parent = node_to_remove.parent
+                    node_to_remove.parent.right_child = node_to_remove.left_child
+                else:
+                    node_to_remove.replace_node_data(node_to_remove.left_child.key, node_to_remove.left_child.payload, node_to_remove.left_child.left_child, node_to_remove.left_child.right_child)
+            else:
+                if node_to_remove.is_left_child():
+                    node_to_remove.right_child.parent = node_to_remove.parent
+                    node_to_remove.parent.left_child = node_to_remove.right_child
+                elif node_to_remove.is_right_child():
+                    node_to_remove.right_child.parent = node_to_remove.parent
+                    node_to_remove.parent.right_child = node_to_remove.right_child
+                else:
+                    node_to_remove.replace_node_data(node_to_remove.right_child.key, node_to_remove.right_child.payload, node_to_remove.right_child.left_child, node_to_remove.right_child.right_child)
+
 
 tester = BinarySearchTree()
 tester[1] = "unoo"
