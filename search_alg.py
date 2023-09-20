@@ -1,4 +1,5 @@
 import random
+#tsting...
 def sequential_search(item, l:list)->bool:
     """Returns True if the item is in the list else False. Equivalent to 'in' operator"""
 
